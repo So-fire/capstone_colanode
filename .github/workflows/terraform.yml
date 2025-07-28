@@ -43,18 +43,22 @@ jobs:
             #       tfsec --version
             - name: format Terraform files
               id: fmt_recursive
-              run: terraform fmt -recursive
+              run: terraform fmt -
+              working-directory: terraform
             - name: Terraform format
               id: fmt
               run: terraform fmt -check
+              working-directory: terraform
 
             - name: Terraform Init
               id: init
               run: terraform init
+              working-directory: terraform
 
             - name: Terraform Validate
               id: validate
               run: terraform validate -no-color
+              working-directory: terraform
 
             # - name: TFLINT
             #   run: |
@@ -67,6 +71,8 @@ jobs:
             - name: Terraform Plan
               id: plan
               run: terraform plan -no-color  -out=tfplan
+              working-directory: terraform
 
             - name: Terraform Apply
               run: terraform apply -auto-approve tfplan
+              working-directory: terraform
