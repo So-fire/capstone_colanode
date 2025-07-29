@@ -7,16 +7,16 @@ variable "ENV" {
   default = "dev"
 }
 
-variable "bucket_name" {
-  type          = string
-  default       = "my-terraform-state-bucket"
-  
-}
+# variable "bucket_name" {
+#   type    = string
+#   default = "my-terraform-state-bucket"
+
+# }
 
 variable "environment" {
   description = "Environment name"
-  type        =  string
-  default     =  "Dev"
+  type        = string
+  default     = "Dev"
 }
 
 variable "project_name" {
