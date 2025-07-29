@@ -1,78 +1,52 @@
 name: deploy resources to AWS
 
 on:
-    push:
-        branches: main
-    # pull_request:
-    #     branches: main
+  push:
+    branches: [main]
+
 jobs:
-    terraform:
-        name: terraform lint, security check and deploy
-        runs-on: ubuntu-latest
+  terraform:
+    name: terraform lint, security check and deploy
+    runs-on: ubuntu-latest
 
-        env:
-            AWS_REGION: 'us-east-1'
-            TF_VERSION: '1.4.0'
-            TFLINT_VERSION: '0.46.1'
-            TFSEC_VERSION: '1.28.1'
-        steps:
-            - name: checkout to gthub repo
-              uses: actions/checkout@v2
+    env:
+      AWS_REGION: 'us-east-1'
+      TF_VERSION: '1.4.0'
 
-            - name: Set up AWS credentials
-              uses: aws-actions/configure-aws-credentials@v1
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ${{ env.AWS_REGION }}
-            - name: setup  terraform
-              uses: hashicorp/setup-terraform@v3
-              with:
-                  terraform_version: ${{ env.TF_VERSION}}
-            # - name: Install TFLint
-            #   run: |
-            #       curl -L https://github.com/terraform-linters/tflint/releases/download/v${{env.TFLINT_VERSION}}/tflint_linux_amd64
-            #       curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-            #       unzip tflint.zip -d /usr/local/bin/
-            #       tflint --version
-            # - name: Install TFSec
-            #   run: |
-            #       curl -L https://github.com/tfsec/tfsec/releases/download/v${{env.TFSEC_VERSION}}/tfsec-linux-amd64
-            #       chmod +x tfsec
-            #       mv tfsec /usr/local/bin/
-            #       tfsec --version
-            - name: format Terraform files
-              id: fmt_recursive
-              run: terraform fmt -
-              working-directory: terraform
-            - name: Terraform format
-              id: fmt
-              run: terraform fmt -check
-              working-directory: terraform
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-            - name: Terraform Init
-              id: init
-              run: terraform init
-              working-directory: terraform
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Terraform Validate
-              id: validate
-              run: terraform validate -no-color
-              working-directory: terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
 
-            # - name: TFLINT
-            #   run: |
-            #       tflint --init
-            #       tflint
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+        working-directory: terraform
 
-            # - name: Terraform Security Scan
-            #   run: tfsec .
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform
 
-            - name: Terraform Plan
-              id: plan
-              run: terraform plan -no-color  -out=tfplan
-              working-directory: terraform
+      - name: Terraform Validate
+        run: terraform validate -no-color
+        working-directory: terraform
 
-            - name: Terraform Apply
-              run: terraform apply -auto-approve tfplan
-              working-directory: terraform
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -out=tfplan
+        working-directory: terraform
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
+        working-directory: terraform
