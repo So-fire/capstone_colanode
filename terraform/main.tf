@@ -6,7 +6,7 @@ locals {
   RESOURCES_PREFIX = "${lower(var.ENV)}-tenant-premium-ehrs"
   ACCOUNTID        = data.aws_caller_identity.current.account_id
   AWS_REGION       = data.aws_region.current.id
- 
+
   common_tags = {
     environment = var.ENV
     project     = "colanode"
@@ -24,7 +24,7 @@ module "vpc" {
 }
 
 module "s3" {
-  source               = "./module/s3"
-  RESOURCES_PREFIX     = local.RESOURCES_PREFIX
-  bucket_name          = "${local.RESOURCES_PREFIX}-bucket-${random_id.s3_suffix.hex}"
+  source           = "./module/s3"
+  RESOURCES_PREFIX = local.RESOURCES_PREFIX
+  bucket_name      = "${local.RESOURCES_PREFIX}-bucket-${random_id.s3_suffix.hex}"
 }
