@@ -2,8 +2,12 @@ terraform {
   required_version = ">= 1.3.0"
 }
 
+resource "random_id" "s3_suffix" {
+  byte_length = 4
+}
+
 locals {
-  RESOURCES_PREFIX = "${lower(var.ENV)}-tenant-premium-ehrs"
+  RESOURCES_PREFIX = "${lower(var.ENV)}-colanode"
   ACCOUNTID        = data.aws_caller_identity.current.account_id
   AWS_REGION       = data.aws_region.current.id
 
