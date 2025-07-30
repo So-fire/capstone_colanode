@@ -1,0 +1,45 @@
+
+# EC2  for public interface
+resource "aws_instance" "public_instance" {
+  ami           =  data.aws_ami.amazon_linux_2023.id
+
+  instance_type = var.ec2_instance_type
+
+  iam_instance_profile = var.PUBLIC_EC2_INSTANCE_PROFILE_NAME
+
+  subnet_id                   = var.public_subnet_ids
+  vpc_security_group_ids      = var.PUBLIC_EC2_SG_ID
+  associate_public_ip_address = true
+
+
+  tags = {
+    Name        = "${var.project_name}-public_ec2"
+    Environment = var.environment
+  }
+}
+
+
+
+# EC2  for private interface
+resource "aws_instance" "private_instance" {
+  ami           =  data.aws_ami.amazon_linux_2023.id
+
+  instance_type = var.ec2_instance_type
+
+  iam_instance_profile = var.PRIVATE_EC2_INSTANCE_PROFILE_NAME
+
+
+#   subnet_id                   = var.private_subnet_ids
+#   vpc_security_group_ids      = var.ec2_sg_id
+#   associate_public_ip_address = false
+
+  subnet_id              = element(var.private_subnet_ids, 0) # Pick first private subnet
+  vpc_security_group_ids = [var.PRIVATE_EC2_SG_ID]
+  associate_public_ip_address = false
+
+
+  tags = {
+    Name        = "${var.project_name}-private_ec2"
+    Environment = var.environment
+  }
+}
