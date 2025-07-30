@@ -21,7 +21,7 @@ resource "aws_instance" "public_instance" {
 
   iam_instance_profile = var.PUBLIC_EC2_INSTANCE_PROFILE_NAME
 
-  subnet_id                   = var.public_subnet_ids
+  subnet_id                   = var.public_subnet_ids[0]
   vpc_security_group_ids      = var.PUBLIC_EC2_SG_ID
   associate_public_ip_address = true
 
@@ -43,7 +43,7 @@ resource "aws_instance" "private_instance" {
   iam_instance_profile = var.PRIVATE_EC2_INSTANCE_PROFILE_NAME
 
 
-  subnet_id                   = var.private_subnet_ids
+  subnet_id                   = var.private_subnet_ids[0]
   vpc_security_group_ids      = var.PRIVATE_EC2_SG_ID
   associate_public_ip_address = false
 
