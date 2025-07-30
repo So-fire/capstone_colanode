@@ -1,6 +1,5 @@
 variable "project_name" {}
 variable "environment" {}
-variable "database_subnet_ids" {}
 variable "POSTGRESQL_SG_ID" {}
 
 
