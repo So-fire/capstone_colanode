@@ -24,7 +24,7 @@ resource "aws_security_group" "public_ec2" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0./0"] #make sure it is your ip/32 , for tutorial i will use 0.0.0.0 SSH (lock this down!)
+    cidr_blocks = ["0.0.0.0/0"] #make sure it is your ip/32 , for tutorial i will use 0.0.0.0 SSH (lock this down!)
   }
 
   egress {
