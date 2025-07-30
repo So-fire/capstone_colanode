@@ -59,7 +59,7 @@ module "ec2" {
   project_name = var.project_name
   #   depends_on                        = [module.rds]
   environment                       = var.environment
-  vpc_id                            = module.network.vpc_id
+  vpc_id                            = module.vpc.vpc_id
   region                            = var.region
   ec2_instance_type                 = var.ec2_instance_type
   PUBLIC_EC2_SG_ID                  = [module.security_group.PUBLIC_EC2_SG_ID]
@@ -74,7 +74,7 @@ module "security_group" {
   source = "./module/security_group"
 
   project_name  = var.project_name
-  vpc_id        = module.network.vpc_id
+  vpc_id        = module.vpc.vpc_id
   environment   = var.environment
   default-route = var.default-route
   vpc_cidr      = var.vpc_cidr
