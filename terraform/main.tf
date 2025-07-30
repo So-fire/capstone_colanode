@@ -57,7 +57,7 @@ module "ec2" {
   source = "./module/ec2"
 
   project_name                      = var.project_name
-  depends_on                        = [module.rds]
+#   depends_on                        = [module.rds]
   environment                       = var.environment
   vpc_id                            = module.network.vpc_id
   region                            = var.region
