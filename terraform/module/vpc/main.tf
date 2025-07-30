@@ -52,7 +52,7 @@ resource "aws_subnet" "private" {
 # Database subnet creation
 ##==============================================
 resource "aws_subnet" "database" {
-  count             = 1
+  count             = 2
   vpc_id            = aws_vpc.main.id
   cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index + 4)
   availability_zone = data.aws_availability_zones.azs.names[count.index]
