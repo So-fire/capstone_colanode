@@ -13,7 +13,7 @@ variable "PRIVATE_EC2_INSTANCE_PROFILE_NAME" {}
 
 variable "public_subnet_ids" {
   description = "Subnet ID where EC2 will be launched"
-  type        = string
+  type        = list(string)
 }
 # # variable "db_name" {}
 variable "private_subnet_ids" {}
