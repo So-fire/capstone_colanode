@@ -94,5 +94,5 @@ module "rds_postgresql" {
   max_allocated_storage = 100
 
   database_subnet_ids = module.vpc.database_subnet_ids
-  POSTGRESQL_SG_ID    = module.security_groups.POSTGRESQL_SG_ID
+  POSTGRESQL_SG_ID    = module.security_group.POSTGRESQL_SG_ID
 }
