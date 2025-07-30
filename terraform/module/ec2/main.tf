@@ -43,13 +43,13 @@ resource "aws_instance" "private_instance" {
   iam_instance_profile = var.PRIVATE_EC2_INSTANCE_PROFILE_NAME
 
 
-    subnet_id                   = var.private_subnet_ids
-    vpc_security_group_ids      = var.PRIVATE_EC2_SG_ID
-    associate_public_ip_address = false
+  subnet_id                   = var.private_subnet_ids
+  vpc_security_group_ids      = var.PRIVATE_EC2_SG_ID
+  associate_public_ip_address = false
 
-#   subnet_id                   = element(var.private_subnet_ids, 0) # Pick first private subnet
-#   vpc_security_group_ids      = [var.PRIVATE_EC2_SG_ID]
-#   associate_public_ip_address = false
+  #   subnet_id                   = element(var.private_subnet_ids, 0) # Pick first private subnet
+  #   vpc_security_group_ids      = [var.PRIVATE_EC2_SG_ID]
+  #   associate_public_ip_address = false
 
 
   tags = {
