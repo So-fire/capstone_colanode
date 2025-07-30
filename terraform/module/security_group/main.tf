@@ -50,20 +50,20 @@ resource "aws_security_group" "private_ec2" {
 
   ingress {
     from_port       = 3000
-    to_port         = 3000          #Allow traffic on port 3000 from your public ec2
+    to_port         = 3000 #Allow traffic on port 3000 from your public ec2
     protocol        = "tcp"
     security_groups = [aws_security_group.public_ec2.id]
   }
 
   ingress {
-    from_port       = 6379      #Allow redis traffic on port 6379 from your public ec2
+    from_port       = 6379 #Allow redis traffic on port 6379 from your public ec2
     to_port         = 6379
     protocol        = "tcp"
     security_groups = [aws_security_group.public_ec2.id]
   }
 
   ingress {
-    from_port       = 9000      ##Allow traffic on port 9000 from your public ec2 (MinIO or S3 mimic.)
+    from_port       = 9000 ##Allow traffic on port 9000 from your public ec2 (MinIO or S3 mimic.)
     to_port         = 9000
     protocol        = "tcp"
     security_groups = [aws_security_group.public_ec2.id]
@@ -71,7 +71,7 @@ resource "aws_security_group" "private_ec2" {
 
   ingress {
     from_port       = 22
-    to_port         = 22          # Allow SSH to the private EC2, but only through the public EC2 (bastion style).
+    to_port         = 22 # Allow SSH to the private EC2, but only through the public EC2 (bastion style).
     protocol        = "tcp"
     security_groups = [aws_security_group.public_ec2.id]
   }
@@ -167,14 +167,14 @@ resource "aws_security_group" "minio" {
 #  security group for NAT needed if private EC2 pulls from the internet (e.g., to apt update or DockerHub).
 ######################################################################
 resource "aws_security_group" "nat" {
-  name        = "${var.project_name}-nat-sg"
-  vpc_id      = var.vpc_id
+  name   = "${var.project_name}-nat-sg"
+  vpc_id = var.vpc_id
 
   ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = [var.vpc_cidr]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {

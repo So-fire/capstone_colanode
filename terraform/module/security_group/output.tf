@@ -2,7 +2,7 @@
 # OUTPUT FOR PUBLIC EC2 SG
 #######################################################################
 output "PUBLIC_EC2_SG_ID" {
- value = aws_security_group.public_ec2.id
+  value = aws_security_group.public_ec2.id
 }
 output "PUBLIC_EC2_SG_NAME" {
   value = aws_security_group.public_ec2.name
@@ -12,7 +12,7 @@ output "PUBLIC_EC2_SG_NAME" {
 # output for private ec2 sg
 #######################################################################
 output "PRIVATE_EC2_SG_ID" {
- value = aws_security_group.private_ec2.id
+  value = aws_security_group.private_ec2.id
 }
 output "PRIVATE_EC2_SG_NAME" {
   value = aws_security_group.private_ec2.name
@@ -22,7 +22,7 @@ output "PRIVATE_EC2_SG_NAME" {
 # output for postgresql  sg
 #######################################################################
 output "POSTGRESQL_EC2_SG_ID" {
- value = aws_security_group.rds.id
+  value = aws_security_group.rds.id
 }
 output "POSTGRESQL_EC2_SG_NAME" {
   value = aws_security_group.rds.name
@@ -42,7 +42,7 @@ output "VALKEY_SG_NAME" {
 # output for minio sg
 #######################################################################
 output "MINIO_SG_ID" {
-  value       = aws_security_group.minio.id
+  value = aws_security_group.minio.id
 }
 output "MINIO_SG_NAME" {
   value = aws_security_group.minio.name
@@ -52,7 +52,7 @@ output "MINIO_SG_NAME" {
 # output for nat sg
 #######################################################################
 output "NAT_SG_ID" {
-  value       = aws_security_group.nat.id
+  value = aws_security_group.nat.id
 }
 output "NAT_SG_NAME" {
   value = aws_security_group.nat.name

@@ -93,17 +93,17 @@ resource "aws_iam_policy" "public_ec2_policy" {
         ]
         Resource = "*"
       },
-    #   {
-    #     Effect = "Allow"
-    #     Action = [
-    #       "s3:GetObject",
-    #       "s3:ListBucket"
-    #     ]
-    #     Resource = [
-    #       "arn:aws:s3:::${var.project_name}-bucket-*",
-    #       "arn:aws:s3:::${var.project_name}-bucket-*/*"
-    #     ]
-    #   }
+      #   {
+      #     Effect = "Allow"
+      #     Action = [
+      #       "s3:GetObject",
+      #       "s3:ListBucket"
+      #     ]
+      #     Resource = [
+      #       "arn:aws:s3:::${var.project_name}-bucket-*",
+      #       "arn:aws:s3:::${var.project_name}-bucket-*/*"
+      #     ]
+      #   }
     ]
   })
 }
