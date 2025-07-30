@@ -27,11 +27,11 @@ module "vpc" {
   environment   = var.environment
 }
 
-module "s3" {
-  source           = "./module/s3"
-  RESOURCES_PREFIX = local.RESOURCES_PREFIX
-  bucket_name      = "${local.RESOURCES_PREFIX}-bucket-${random_id.s3_suffix.hex}"
-}
+# module "s3" {
+#   source           = "./module/s3"
+#   RESOURCES_PREFIX = local.RESOURCES_PREFIX
+#   bucket_name      = "${local.RESOURCES_PREFIX}-bucket-${random_id.s3_suffix.hex}"
+# }
 
 
 module "role" {
