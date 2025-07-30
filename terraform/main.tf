@@ -80,8 +80,8 @@ module "security_group" {
   vpc_cidr      = var.vpc_cidr
 }
 
-module "rds" {
-  source       = "./module/rds"
+module "rds_postgresql" {
+  source       = "./module/rds_postgresql"
   project_name = var.project_name
   environment  = var.environment
 
