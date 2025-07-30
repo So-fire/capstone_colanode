@@ -21,10 +21,10 @@ output "PRIVATE_EC2_SG_NAME" {
 ####################################################################
 # output for postgresql  sg
 #######################################################################
-output "POSTGRESQL_EC2_SG_ID" {
+output "POSTGRESQL_SG_ID" {
   value = aws_security_group.rds.id
 }
-output "POSTGRESQL_EC2_SG_NAME" {
+output "POSTGRESQL_SG_NAME" {
   value = aws_security_group.rds.name
 }
 
