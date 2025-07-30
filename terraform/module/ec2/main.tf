@@ -1,4 +1,18 @@
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners      = ["amazon"]
 
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023*-x86_64"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+data "aws_caller_identity" "current" {}
 # EC2  for public interface
 resource "aws_instance" "public_instance" {
   ami = data.aws_ami.amazon_linux_2023.id
