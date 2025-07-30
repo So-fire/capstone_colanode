@@ -6,3 +6,7 @@ output "rds_endpoint" {
 output "rds_port" {
   value = aws_db_instance.this.port
 }
+
+output "latest_postgres_version" {
+  value = data.aws_rds_engine_version.postgres.version
+}

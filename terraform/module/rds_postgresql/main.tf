@@ -1,3 +1,8 @@
+data "aws_rds_engine_version" "postgres" {
+  engine = "postgres"
+}
+
+
 resource "aws_db_subnet_group" "this" {
   name       = "${var.project_name}-${var.environment}-db-subnet-group"
   subnet_ids = var.database_subnet_ids
@@ -13,7 +18,7 @@ resource "aws_db_instance" "this" {
   allocated_storage     = var.allocated_storage
   max_allocated_storage = var.max_allocated_storage
   engine                = "postgres"
-  engine_version        = "15.5"
+  engine_version        = data.aws_rds_engine_version.postgres.version
   instance_class        = var.instance_class
   db_name               = var.db_name
   username              = var.db_username
@@ -28,6 +33,8 @@ resource "aws_db_instance" "this" {
   deletion_protection     = false
   multi_az                = false
   backup_retention_period = 7
+
+
 
   tags = {
     Name        = "${var.project_name}-postgres-rds"
