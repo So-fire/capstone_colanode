@@ -80,28 +80,28 @@ module "security_group" {
   vpc_cidr      = var.vpc_cidr
 }
 
-module "rds_postgresql" {
-  source       = "./module/rds_postgresql"
-  project_name = var.project_name
-  environment  = var.environment
+# module "rds_postgresql" {
+#   source       = "./module/rds_postgresql"
+#   project_name = var.project_name
+#   environment  = var.environment
 
-  db_name     = var.db_name
-  db_username = var.db_username
-  db_password = var.db_password # Set this in tfvars or secrets
+#   db_name     = var.db_name
+#   db_username = var.db_username
+#   db_password = var.db_password # Set this in tfvars or secrets
 
-  instance_class        = var.db_instance_class
-  allocated_storage     = 20
-  max_allocated_storage = 100
+#   instance_class        = var.db_instance_class
+#   allocated_storage     = 20
+#   max_allocated_storage = 100
 
-  database_subnet_ids = module.vpc.database_subnet_ids
-  POSTGRESQL_SG_ID    = module.security_group.POSTGRESQL_SG_ID
-}
+#   database_subnet_ids = module.vpc.database_subnet_ids
+#   POSTGRESQL_SG_ID    = module.security_group.POSTGRESQL_SG_ID
+# }
 
-module "elastic_cache_redis" {
-  source = "./module/elastic_cache_redis" # Adjust path as needed
+# module "elastic_cache_redis" {
+#   source = "./module/elastic_cache_redis" # Adjust path as needed
 
-  project_name       = var.project_name
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnet_ids
-  VALKEY_SG_ID       = module.security_group.VALKEY_SG_ID
-}
+#   project_name       = var.project_name
+#   vpc_id             = module.vpc.vpc_id
+#   private_subnet_ids = module.vpc.private_subnet_ids
+#   VALKEY_SG_ID       = module.security_group.VALKEY_SG_ID
+# }
