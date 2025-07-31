@@ -16,8 +16,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug: Show EC2 public IP
-        run: echo "Public EC2 IP is: ${{ secrets.PUBLIC_EC2_IP }}"
+      # - name: Debug: Show EC2 public IP
+      #   run: echo "Public EC2 IP is: ${{ secrets.PUBLIC_EC2_IP }}"
 
       - name: Set up SSH key and known hosts
         run: |
