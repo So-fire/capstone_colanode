@@ -43,6 +43,4 @@ jobs:
           EOF
 
       - name: Deploy to Private EC2 via Bastion (Public EC2)
-        run: |
-          scp -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} hosting/docker/docker-compose.private.yml ec2-user@${{ secrets.PRIVATE_EC2_IP }}:/home/ec2-user/docker-compose.yml
-          ssh -o ProxyJum
+        run:
