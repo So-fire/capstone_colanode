@@ -56,6 +56,13 @@ resource "aws_security_group" "private_ec2" {
   }
 
   ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # HTTPS
+  }
+  
+  ingress {
     from_port       = 6379 #Allow redis traffic on port 6379 from your public ec2
     to_port         = 6379
     protocol        = "tcp"
