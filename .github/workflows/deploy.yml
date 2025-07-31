@@ -21,11 +21,17 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        # Add known hosts with verbose output to catch failures
-        ssh-keyscan -t rsa ${{ secrets.PUBLIC_EC2_IP }} >> ~/.ssh/known_hosts
-        ssh-keyscan -t rsa ${{ secrets.PRIVATE_EC2_IP }} >> ~/.ssh/known_hosts
-        # Optional: Confirm private key format is loaded
-        head -n 5 ~/.ssh/id_rsa
+        touch ~/.ssh/known_hosts
+
+        echo "🔍 Scanning known hosts..."
+        ssh-keyscan -v -t rsa ${{ secrets.PUBLIC_EC2_IP }} >> ~/.ssh/known_hosts
+        ssh-keyscan -v -t rsa ${{ secrets.PRIVATE_EC2_IP }} >> ~/.ssh/known_hosts
+
+        echo "✅ SSH known_hosts content:"
+        cat ~/.ssh/known_hosts
+
+        echo "🔐 Private key starts with:"
+        head -n 2 ~/.ssh/id_rsa
 
     - name: Test SSH to Public EC2
       run: |
@@ -33,7 +39,7 @@ jobs:
 
     - name: Deploy to Public EC2
       run: |
-        scp docker/docker-compose.public.yml ec2-user@${{ secrets.PUBLIC_EC2_IP }}:/home/ec2-user/docker-compose.yml
+        scp hosting/docker/docker-compose.public.yml ec2-user@${{ secrets.PUBLIC_EC2_IP }}:/home/ec2-user/docker-compose.yml
         ssh ec2-user@${{ secrets.PUBLIC_EC2_IP }} << 'EOF'
           docker compose -f docker-compose.yml pull
           docker compose -f docker-compose.yml up -d
@@ -41,7 +47,7 @@ jobs:
 
     - name: Deploy to Private EC2 via Bastion (Public EC2)
       run: |
-        scp docker/docker-compose.private.yml ec2-user@${{ secrets.PRIVATE_EC2_IP }}:/home/ec2-user/docker-compose.yml
+        scp -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} hosting/docker/docker-compose.private.yml ec2-user@${{ secrets.PRIVATE_EC2_IP }}:/home/ec2-user/docker-compose.yml
         ssh -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} ec2-user@${{ secrets.PRIVATE_EC2_IP }} << 'EOF'
           docker compose -f docker-compose.yml pull
           docker compose -f docker-compose.yml up -d
