@@ -60,7 +60,7 @@ services:
       SERVER_NAME: 'Colanode Prod'
       SERVER_MODE: 'standalone'
       SERVER_PATH_PREFIX: '/api'
-      SERVER_CORS_ORIGIN: 'http://3.227.17.208'  #put your public  ip for your public facing ec2
+      SERVER_CORS_ORIGIN: 'http://3.227.17.208'  #put your public ip for your public facing ec2
       ACCOUNT_VERIFICATION_TYPE: 'automatic'
       ACCOUNT_OTP_TIMEOUT: '600'
       USER_STORAGE_LIMIT: '10737418240'
