@@ -24,8 +24,8 @@ jobs:
         touch ~/.ssh/known_hosts
 
         echo "🔍 Scanning known hosts..."
-        ssh-keyscan -v -t rsa ${{ secrets.PUBLIC_EC2_IP }} >> ~/.ssh/known_hosts
-        ssh-keyscan -v -t rsa ${{ secrets.PRIVATE_EC2_IP }} >> ~/.ssh/known_hosts
+        ssh-keyscan -v -t rsa,ecdsa,ed25519 ${{ secrets.PUBLIC_EC2_IP }} >> ~/.ssh/known_hosts
+        ssh-keyscan -v -t rsa,ecdsa,ed25519 ${{ secrets.PRIVATE_EC2_IP }} >> ~/.ssh/known_hosts
 
         echo "✅ SSH known_hosts content:"
         cat ~/.ssh/known_hosts
