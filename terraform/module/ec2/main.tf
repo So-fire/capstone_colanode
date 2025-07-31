@@ -1,3 +1,9 @@
+resource "aws_key_pair" "colanode" {
+  key_name   = "colanode-key"
+  public_key = file("${path.module}/keys/colanode-key.pub")
+}
+
+
 data "aws_ami" "amazon_linux_2023" {
   most_recent = true
   owners      = ["amazon"]
@@ -13,7 +19,10 @@ data "aws_ami" "amazon_linux_2023" {
   }
 }
 data "aws_caller_identity" "current" {}
+
+#######################################################
 # EC2  for public interface
+#####################################################
 resource "aws_instance" "public_instance" {
   ami = data.aws_ami.amazon_linux_2023.id
 
@@ -25,6 +34,8 @@ resource "aws_instance" "public_instance" {
   vpc_security_group_ids      = var.PUBLIC_EC2_SG_ID
   associate_public_ip_address = true
 
+  key_name = aws_key_pair.colanode.key_name
+
 
   tags = {
     Name        = "${var.project_name}-public_ec2"
@@ -33,8 +44,9 @@ resource "aws_instance" "public_instance" {
 }
 
 
-
+#######################################################
 # EC2  for private interface
+###################################################
 resource "aws_instance" "private_instance" {
   ami = data.aws_ami.amazon_linux_2023.id
 
@@ -46,10 +58,8 @@ resource "aws_instance" "private_instance" {
   subnet_id                   = var.private_subnet_ids[0]
   vpc_security_group_ids      = var.PRIVATE_EC2_SG_ID
   associate_public_ip_address = false
-
-  #   subnet_id                   = element(var.private_subnet_ids, 0) # Pick first private subnet
-  #   vpc_security_group_ids      = [var.PRIVATE_EC2_SG_ID]
-  #   associate_public_ip_address = false
+    
+  key_name = aws_key_pair.colanode.key_name
 
 
   tags = {

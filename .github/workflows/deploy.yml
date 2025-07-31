@@ -1,0 +1,41 @@
+name: Deploy Colanode App
+
+on:
+  push:
+    branches: [main]  # or your prod branch
+    paths:
+      - 'hosting/docker/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    name: Deploy to EC2 Instances
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan ${{ secrets.PUBLIC_EC2_IP }} >> ~/.ssh/known_hosts
+        ssh-keyscan ${{ secrets.PRIVATE_EC2_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to Public EC2
+      run: |
+        scp docker/docker-compose.public.yml ec2-user@${{ secrets.PUBLIC_EC2_IP }}:/home/ec2-user/docker-compose.yml
+        ssh ec2-user@${{ secrets.PUBLIC_EC2_IP }} << 'EOF'
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
+        EOF
+
+    - name: Deploy to Private EC2
+      run: |
+        scp docker/docker-compose.private.yml ec2-user@${{ secrets.PRIVATE_EC2_IP }}:/home/ec2-user/docker-compose.yml
+        ssh -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} ec2-user@${{ secrets.PRIVATE_EC2_IP }} << 'EOF'
+          docker compose -f docker-compose.yml pull
+          docker compose -f docker-compose.yml up -d
+        EOF
