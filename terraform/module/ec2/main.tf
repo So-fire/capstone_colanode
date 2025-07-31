@@ -58,7 +58,7 @@ resource "aws_instance" "private_instance" {
   subnet_id                   = var.private_subnet_ids[0]
   vpc_security_group_ids      = var.PRIVATE_EC2_SG_ID
   associate_public_ip_address = false
-    
+
   key_name = aws_key_pair.colanode.key_name
 
 
