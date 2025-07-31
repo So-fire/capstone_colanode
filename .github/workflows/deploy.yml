@@ -41,6 +41,25 @@ jobs:
         run: |
           scp hosting/docker/docker-compose.public.yml ec2-user@${{ secrets.PUBLIC_EC2_IP }}:/home/ec2-user/docker-compose.yml
           ssh ec2-user@${{ secrets.PUBLIC_EC2_IP }} << 'EOF'
+            # Install Docker if not already installed
+            if ! command -v docker &> /dev/null; then
+              echo "🚀 Installing Docker..."
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ec2-user
+              newgrp docker
+            fi
+
+            # Install Docker Compose CLI plugin
+            if ! docker compose version &> /dev/null; then
+              echo "🔧 Installing Docker Compose..."
+              mkdir -p ~/.docker/cli-plugins
+              curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+              chmod +x ~/.docker/cli-plugins/docker-compose
+            fi
+
             docker compose -f docker-compose.yml pull
             docker compose -f docker-compose.yml up -d
           EOF
@@ -49,6 +68,25 @@ jobs:
         run: |
           scp -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} hosting/docker/docker-compose.private.yml ec2-user@${{ secrets.PRIVATE_EC2_IP }}:/home/ec2-user/docker-compose.yml
           ssh -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} ec2-user@${{ secrets.PRIVATE_EC2_IP }} << 'EOF'
+            # Install Docker if not already installed
+            if ! command -v docker &> /dev/null; then
+              echo "🚀 Installing Docker..."
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ec2-user
+              newgrp docker
+            fi
+
+            # Install Docker Compose CLI plugin
+            if ! docker compose version &> /dev/null; then
+              echo "🔧 Installing Docker Compose..."
+              mkdir -p ~/.docker/cli-plugins
+              curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+              chmod +x ~/.docker/cli-plugins/docker-compose
+            fi
+
             docker compose -f docker-compose.yml pull
             docker compose -f docker-compose.yml up -d
           EOF
