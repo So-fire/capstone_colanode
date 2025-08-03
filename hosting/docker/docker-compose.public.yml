@@ -16,3 +16,5 @@ services:
 networks:
   colanode_network:
     driver: bridge
+
+
