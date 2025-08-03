@@ -26,6 +26,14 @@ resource "aws_security_group" "public_ec2" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] #make sure it is your ip/32 , for tutorial i will use 0.0.0.0 SSH (lock this down!)
   }
+  
+  ingress {
+  from_port   = 3000
+  to_port     = 3000
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"] # Open port 3000 to internet
+}
+
 
   egress {
     from_port   = 0
