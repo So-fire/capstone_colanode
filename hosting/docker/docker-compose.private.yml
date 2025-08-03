@@ -59,7 +59,7 @@ services:
       NODE_ENV: production
       SERVER_NAME: 'Colanode Prod'
       SERVER_MODE: 'standalone'
-      SERVER_PATH_PREFIX: '/api'
+      SERVER_PATH_PREFIX: 'api'
       SERVER_CORS_ORIGIN: 'http://44.198.171.48,http://localhost:3000'  #put your  public ip for your public facing ec2
       SERVER_HOST: '0.0.0.0'  # 👈 Add this line wenever u are deploying to ec2
       ACCOUNT_VERIFICATION_TYPE: 'automatic'
