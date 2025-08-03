@@ -1,0 +1,92 @@
+name: Deploy Colanode App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'hosting/docker/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    name: Deploy to EC2 Instances
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH key and known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          touch ~/.ssh/known_hosts
+
+          echo "🔍 Scanning public EC2 known host..."
+          ssh-keyscan -v -t rsa,ecdsa,ed25519 ${{ secrets.PUBLIC_EC2_IP }} >> ~/.ssh/known_hosts || true
+
+          echo "🔁 Initiating proxy SSH to private EC2 (to store fingerprint)..."
+          ssh -o StrictHostKeyChecking=accept-new \
+              -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} \
+              ec2-user@${{ secrets.PRIVATE_EC2_IP }} "echo 🔐 Private EC2 fingerprint stored" || true
+
+          echo "✅ ~/.ssh/known_hosts content:"
+          cat ~/.ssh/known_hosts
+
+          echo "🔐 Private key preview:"
+          head -n 2 ~/.ssh/id_rsa
+
+      - name: Test SSH to Public EC2
+        run: |
+          ssh -vvv -o StrictHostKeyChecking=no ec2-user@${{ secrets.PUBLIC_EC2_IP }} "echo ✅ SSH to Public EC2 successful"
+
+      - name: Deploy to Public EC2
+        run: |
+          scp hosting/docker/docker-compose.public.yml ec2-user@${{ secrets.PUBLIC_EC2_IP }}:/home/ec2-user/docker-compose.yml
+          ssh ec2-user@${{ secrets.PUBLIC_EC2_IP }} << 'EOF'
+            if ! command -v docker &> /dev/null; then
+              echo "🚀 Installing Docker..."
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ec2-user
+              newgrp docker
+            fi
+
+            if ! docker compose version &> /dev/null; then
+              echo "🔧 Installing Docker Compose..."
+              mkdir -p ~/.docker/cli-plugins
+              curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+              chmod +x ~/.docker/cli-plugins/docker-compose
+            fi
+
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml up -d
+          EOF
+
+      - name: Deploy to Private EC2 via Bastion (Public EC2)
+        run: |
+          scp -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} hosting/docker/docker-compose.private.yml ec2-user@${{ secrets.PRIVATE_EC2_IP }}:/home/ec2-user/docker-compose.yml
+          ssh -o ProxyJump=ec2-user@${{ secrets.PUBLIC_EC2_IP }} ec2-user@${{ secrets.PRIVATE_EC2_IP }} << 'EOF'
+            if ! command -v docker &> /dev/null; then
+              echo "🚀 Installing Docker..."
+              sudo yum update -y
+              sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ec2-user
+              newgrp docker
+            fi
+
+            if ! docker compose version &> /dev/null; then
+              echo "🔧 Installing Docker Compose..."
+              mkdir -p ~/.docker/cli-plugins
+              curl -SL https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+              chmod +x ~/.docker/cli-plugins/docker-compose
+            fi
+
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml up -d
+          EOF

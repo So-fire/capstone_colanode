@@ -90,7 +90,8 @@ services:
       SERVER_AVATAR: ''
       # Possible values for SERVER_MODE: 'standalone', 'cluster'
       SERVER_MODE: 'standalone'
-
+      SERVER_PATH_PREFIX: 'http://localhost:3000/api'
+      SERVER_CORS_ORIGIN: 'http://localhost:4000'
       # Optional custom path prefix for the server.
       # Add a plain text without any slashes. For example if you set 'colanode'
       # the URL 'https://localhost:3000/config' will be: 'https://localhost:3000/colanode/config'
@@ -151,11 +152,9 @@ services:
       REDIS_URL: 'redis://:your_valkey_password@valkey:6379/0'
       REDIS_DB: '0'
       # Optional variables:
-      # REDIS_JOBS_QUEUE_NAME: 'jobs'
-      # REDIS_JOBS_QUEUE_PREFIX: 'colanode'
-      # REDIS_TUS_LOCK_PREFIX: 'colanode:tus:lock'
-      # REDIS_TUS_KV_PREFIX: 'colanode:tus:kv'
-      # REDIS_EVENTS_CHANNEL: 'events'
+      REDIS_JOBS_QUEUE_NAME: 'jobs'
+      REDIS_JOBS_QUEUE_PREFIX: 'colanode'
+      REDIS_EVENTS_CHANNEL: 'events'
 
       # ───────────────────────────────────────────────────────────────
       # S3 configuration for files.
@@ -203,8 +202,18 @@ services:
     image: ghcr.io/colanode/web:latest
     container_name: colanode_web
     restart: always
+    environment:
+      VITE_SERVER_URL: 'http://localhost:3000/api'
     ports:
       - '4000:80'
+    networks:
+      - colanode_network
+  
+  adminer:  # ✅ Add this inside services
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
     networks:
       - colanode_network
 
@@ -216,3 +225,103 @@ volumes:
 networks:
   colanode_network:
     driver: bridge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# version: '3.8'
+
+# services:
+#   postgres:
+#     image: pgvector/pgvector:pg17
+#     container_name: colanode_postgres
+#     restart: always
+#     environment:
+#       POSTGRES_USER: colanode_user
+#       POSTGRES_PASSWORD: postgrespass123
+#       POSTGRES_DB: colanode_db
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     ports:
+#       - '5432:5432'
+#     networks:
+#       - colanode_network
+
+#   valkey:
+#     image: valkey/valkey:8.1
+#     container_name: colanode_valkey
+#     restart: always
+#     command: ["valkey-server", "--requirepass", "your_valkey_password"]
+#     volumes:
+#       - valkey_data:/data
+#     ports:
+#       - '6379:6379'
+#     networks:
+#       - colanode_network
+
+#   minio:
+#     image: minio/minio:RELEASE.2025-04-08T15-41-24Z
+#     container_name: colanode_minio
+#     restart: always
+#     environment:
+#       MINIO_ROOT_USER: minioadmin
+#       MINIO_ROOT_PASSWORD: your_minio_password
+#       MINIO_BROWSER: 'on'
+#       MINIO_DOMAIN: minio
+#       MINIO_ADDRESS: ':9000'
+#       MINIO_CONSOLE_ADDRESS: ':9001'
+#     volumes:
+#       - minio_data:/data
+#     ports:
+#       - '9000:9000'
+#       - '9001:9001'
+#     entrypoint: sh
+#     command:
+#       - "-c"
+#       - "mkdir -p /data/colanode && minio server /data --address ':9000' --console-address ':9001'"
+#     networks:
+#       - colanode_network
+
+#   # Uncomment to test emails locally
+#   # smtp:
+#   #   image: axllent/mailpit:v1.24.1
+#   #   container_name: colanode_smtp
+#   #   restart: always
+#   #   ports:
+#   #     - '1025:1025'
+#   #     - '8025:8025'
+#   #   networks:
+#   #     - colanode_network
+
+#   web:
+#     image: ghcr.io/colanode/web:latest
+#     container_name: colanode_web
+#     restart: always
+#     environment:
+#       VITE_SERVER_URL: 'http://localhost:3000/api'
+#     ports:
+#       - '4000:80'
+#     networks:
+#       - colanode_network
+
+# volumes:
+#   postgres_data:
+#   valkey_data:
+#   minio_data:
+
+# networks:
+#   colanode_network:
+#     driver: bridge
