@@ -9,7 +9,7 @@ services:
       # Update this to point to backend in private subnet (via ALB or IP)
       VITE_SERVER_URL: 'http://10.0.2.6:3000/api'
     ports:
-      - '3000:80'
+      - '80:80'
     networks:
       - colanode_network
 
