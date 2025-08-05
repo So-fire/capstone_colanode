@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       # Update this to point to backend in private subnet (via ALB or IP)
-      VITE_SERVER_URL: 'http://10.0.2.133:3000/api' #add your private ec2 ip 
+      VITE_SERVER_URL: 'http://10.0.2.47:3000/api' #add your private ec2 ip 
     ports:
       - '3000:80'
     networks:
