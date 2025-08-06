@@ -7,9 +7,9 @@ resource "random_id" "s3_suffix" {
 }
 
 locals {
-  RESOURCES_PREFIX = "${lower(var.ENV)}-colanode"
-  ACCOUNTID        = data.aws_caller_identity.current.account_id
-  AWS_REGION       = data.aws_region.current.id
+  RESOURCES_PREFIX          = "${lower(var.ENV)}-colanode"
+  ACCOUNTID                 = data.aws_caller_identity.current.account_id
+  AWS_REGION                = data.aws_region.current.id
   shared_aurora_db_username = "${var.ENV}_tenant_premium_ehrs_shared_db_username"
 
   common_tags = {
@@ -97,7 +97,7 @@ module "rds_postgresql" {
 
   database_subnet_ids = module.vpc.database_subnet_ids
   POSTGRESQL_SG_ID    = module.security_group.POSTGRESQL_SG_ID
-    depends_on = [ module.secret_manager ]
+  depends_on          = [module.secret_manager]
 
 }
 
@@ -111,7 +111,7 @@ module "elastic_cache_redis" {
 }
 
 module "secret_manager" {
-  source       = "./modules/secret_manager"
+  source           = "./modules/secret_manager"
   RESOURCES_PREFIX = local.RESOURCES_PREFIX
-  username     = local.shared_postgrerds_db_username
+  username         = local.shared_postgrerds_db_username
 }
