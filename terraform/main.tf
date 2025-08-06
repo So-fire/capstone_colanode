@@ -10,7 +10,6 @@ locals {
   RESOURCES_PREFIX          = "${lower(var.ENV)}-colanode"
   ACCOUNTID                 = data.aws_caller_identity.current.account_id
   AWS_REGION                = data.aws_region.current.id
-  shared_aurora_db_username = "${var.ENV}_tenant_premium_ehrs_shared_db_username"
 
   common_tags = {
     environment = var.ENV
@@ -102,7 +101,7 @@ module "rds_postgresql" {
 }
 
 module "elastic_cache_redis" {
-  source = "./module/elastic_cache_redis" # Adjust path as needed
+  source = "./module/elastic_cache_redis"
 
   project_name       = var.project_name
   vpc_id             = module.vpc.vpc_id
@@ -111,7 +110,9 @@ module "elastic_cache_redis" {
 }
 
 module "secret_manager" {
-  source           = "./modules/secret_manager"
+  source           = "./module/secret_manager"
   RESOURCES_PREFIX = local.RESOURCES_PREFIX
-  username         = local.shared_postgrerds_db_username
+  db_username         = var.db_username
+  db_name          = var.db_name
+ 
 }

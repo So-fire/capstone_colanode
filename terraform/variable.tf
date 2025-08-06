@@ -61,18 +61,18 @@ variable "ec2_instance_type" {
 ###=============================================
 #  RDS VARIABLES
 ###============================================
-# variable "db_name" {
-#   description = "Name of the RDS database"
-#   type        = string
-#   default     = "postgres"
+variable "db_name" {
+  description = "Name of the RDS database"
+  type        = string
+  default     = "postgres"
 
-# }
+}
 
-# variable "db_username" {
-#   description = "Username for the RDS database"
-#   type        = string
-#   default     = "postgres"
-# }
+variable "db_username" {
+  description = "Username for the RDS database"
+  type        = string
+  default     = "postgres"
+}
 
 # variable "db_password" {
 #   description = "Username for the postgre RDS database" #never do tis ever, tis is just for practice
