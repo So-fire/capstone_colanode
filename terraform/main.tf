@@ -10,6 +10,7 @@ locals {
   RESOURCES_PREFIX = "${lower(var.ENV)}-colanode"
   ACCOUNTID        = data.aws_caller_identity.current.account_id
   AWS_REGION       = data.aws_region.current.id
+  shared_aurora_db_username = "${var.ENV}_tenant_premium_ehrs_shared_db_username"
 
   common_tags = {
     environment = var.ENV
@@ -80,28 +81,37 @@ module "security_group" {
   vpc_cidr      = var.vpc_cidr
 }
 
-# module "rds_postgresql" {
-#   source       = "./module/rds_postgresql"
-#   project_name = var.project_name
-#   environment  = var.environment
+module "rds_postgresql" {
+  source       = "./module/rds_postgresql"
+  project_name = var.project_name
+  environment  = var.environment
 
-#   db_name     = var.db_name
-#   db_username = var.db_username
-#   db_password = var.db_password # Set this in tfvars or secrets
+  db_name     = module.secret_manager.db_name
+  db_username = module.secret_manager.db_username
+  db_password = module.secret_manager.secret_password
 
-#   instance_class        = var.db_instance_class
-#   allocated_storage     = 20
-#   max_allocated_storage = 100
 
-#   database_subnet_ids = module.vpc.database_subnet_ids
-#   POSTGRESQL_SG_ID    = module.security_group.POSTGRESQL_SG_ID
-# }
+  instance_class        = var.db_instance_class
+  allocated_storage     = 20
+  max_allocated_storage = 100
 
-# module "elastic_cache_redis" {
-#   source = "./module/elastic_cache_redis" # Adjust path as needed
+  database_subnet_ids = module.vpc.database_subnet_ids
+  POSTGRESQL_SG_ID    = module.security_group.POSTGRESQL_SG_ID
+    depends_on = [ module.secret_manager ]
 
-#   project_name       = var.project_name
-#   vpc_id             = module.vpc.vpc_id
-#   private_subnet_ids = module.vpc.private_subnet_ids
-#   VALKEY_SG_ID       = module.security_group.VALKEY_SG_ID
-# }
+}
+
+module "elastic_cache_redis" {
+  source = "./module/elastic_cache_redis" # Adjust path as needed
+
+  project_name       = var.project_name
+  vpc_id             = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_ids
+  VALKEY_SG_ID       = module.security_group.VALKEY_SG_ID
+}
+
+module "secret_manager" {
+  source       = "./modules/secret_manager"
+  RESOURCES_PREFIX = local.RESOURCES_PREFIX
+  username     = local.shared_postgrerds_db_username
+}
