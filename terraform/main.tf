@@ -7,9 +7,9 @@ resource "random_id" "s3_suffix" {
 }
 
 locals {
-  RESOURCES_PREFIX          = "${lower(var.ENV)}-colanode"
-  ACCOUNTID                 = data.aws_caller_identity.current.account_id
-  AWS_REGION                = data.aws_region.current.id
+  RESOURCES_PREFIX = "${lower(var.ENV)}-colanode"
+  ACCOUNTID        = data.aws_caller_identity.current.account_id
+  AWS_REGION       = data.aws_region.current.id
 
   common_tags = {
     environment = var.ENV
@@ -112,7 +112,7 @@ module "elastic_cache_redis" {
 module "secret_manager" {
   source           = "./module/secret_manager"
   RESOURCES_PREFIX = local.RESOURCES_PREFIX
-  db_username         = var.db_username
+  db_username      = var.db_username
   db_name          = var.db_name
- 
+
 }
