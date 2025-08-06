@@ -31,4 +31,3 @@ output "PUBLIC_EC2_INSTANCE_PROFILE_NAME" {
 output "PRIVATE_EC2_INSTANCE_PROFILE_NAME" {
   value = aws_iam_instance_profile.private_profile.name
 }
-

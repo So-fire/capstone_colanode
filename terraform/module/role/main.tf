@@ -28,8 +28,9 @@ resource "aws_iam_role" "private_ec2_role" {
   })
 }
 
-
+#########################################################################
 # Instance Profiles
+#####################################################################
 resource "aws_iam_instance_profile" "public_profile" {
   name = "${var.project_name}_public_profile"
   role = aws_iam_role.public_ec2_role.name

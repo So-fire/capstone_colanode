@@ -9,7 +9,7 @@ variable "PRIVATE_EC2_SG_ID" {}
 
 variable "PUBLIC_EC2_INSTANCE_PROFILE_NAME" {}
 variable "PRIVATE_EC2_INSTANCE_PROFILE_NAME" {}
-
+variable "EC2_SECRET_MANAGER_ACCESS_INSTANCE_PROFILE_NAME" {}
 
 variable "public_subnet_ids" {
   description = "Subnet ID where EC2 will be launched"
