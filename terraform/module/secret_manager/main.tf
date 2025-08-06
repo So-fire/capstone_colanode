@@ -6,7 +6,7 @@ resource "random_password" "shared_db_password" {
 
 resource "aws_secretsmanager_secret" "shared_db_secret" {
   name        = "${var.RESOURCES_PREFIX}-shared-db-secret-man"
-  description = "Database credentials for Aurora"
+  description = "Database credentials for postgresql"
 }
 
 resource "aws_secretsmanager_secret_version" "shared_db_secret_version" {
