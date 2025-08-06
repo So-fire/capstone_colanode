@@ -7,3 +7,10 @@ output "secret_password" {
   sensitive = true
 }
 
+output "db_name" {
+  value = var.db_name
+}
+
+output "db_username" {
+  value = var.db_username
+}
