@@ -53,7 +53,7 @@ resource "aws_instance" "private_instance" {
   instance_type = var.ec2_instance_type
 
   iam_instance_profile = var.PRIVATE_EC2_INSTANCE_PROFILE_NAME
-  user_data            = file("${path.module}/scripts/fetch-secret.sh") #tis will run te script on te private instance to fetc db credentials
+  user_data            = file("${path.module}/script/secret_script.sh") #tis will run te script on te private instance to fetc db credentials
 
 
   subnet_id                   = var.private_subnet_ids[0]
