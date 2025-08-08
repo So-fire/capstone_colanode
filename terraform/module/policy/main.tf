@@ -26,7 +26,8 @@ resource "aws_iam_policy" "private_ec2_policy" {
         Effect = "Allow"
         Action = [
           "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecrets"
         ]
         Resource = "*"
       },
