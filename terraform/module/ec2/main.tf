@@ -53,7 +53,11 @@ resource "aws_instance" "private_instance" {
   instance_type = var.ec2_instance_type
 
   iam_instance_profile = var.PRIVATE_EC2_INSTANCE_PROFILE_NAME
-  user_data            = file("${path.module}/script/secret_script.sh") #tis will run te script on te private instance to fetc db credentials
+  #tis will run te script on te private instance to fetc db credentials from secret manager also it will Pass DB_HOST and DB_PORT from Terraform
+  user_data = templatefile("${path.module}/script/secret_script.sh", {
+    DB_HOST = module.rds_postgresql.rds_endpoint
+    DB_PORT = module.rds_postgresql.rds_port
+  })
 
 
   subnet_id                   = var.private_subnet_ids[0]

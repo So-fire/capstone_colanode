@@ -21,10 +21,17 @@ DB_NAME=$(echo "$SECRET_JSON" | jq -r .db_name)
 DB_USER=$(echo "$SECRET_JSON" | jq -r .db_username)
 DB_PASS=$(echo "$SECRET_JSON" | jq -r .password)
 
+# These values must be passed in via Terraform user_data substitution
+DB_HOST="${DB_HOST}"
+DB_PORT="${DB_PORT}"
+
+# Create .env file
 cat <<EOF > "$ENV_PATH"
 DB_NAME=$DB_NAME
 DB_USER=$DB_USER
 DB_PASS=$DB_PASS
+DB_HOST=$DB_HOST
+DB_PORT=$DB_PORT
 EOF
 
 chown ubuntu:ubuntu "$ENV_PATH"

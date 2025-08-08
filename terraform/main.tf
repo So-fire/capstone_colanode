@@ -68,6 +68,8 @@ module "ec2" {
   PRIVATE_EC2_INSTANCE_PROFILE_NAME = module.role.PRIVATE_EC2_INSTANCE_PROFILE_NAME
   public_subnet_ids                 = module.vpc.public_subnet_ids
   private_subnet_ids                = module.vpc.private_subnet_ids
+  depends_on                        = [module.secret_manager, module.rds_postgresql]
+
 }
 
 module "security_group" {
@@ -87,7 +89,7 @@ module "rds_postgresql" {
 
   db_name     = module.secret_manager.db_name
   db_username = module.secret_manager.db_username
-  # db_password = module.secret_manager.secret_password
+  db_password = module.secret_manager.secret_password
 
 
   instance_class        = var.db_instance_class
