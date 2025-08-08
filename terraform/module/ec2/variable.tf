@@ -20,3 +20,4 @@ variable "private_subnet_ids" {}
 variable "rds_endpoint" {}
 variable "rds_port" {}
 variable "shared_db_secret_name" {}
+variable "valkey_secret_name" {}

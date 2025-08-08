@@ -1,3 +1,6 @@
+##################################################################
+# secret for database
+###################################################################
 resource "random_password" "shared_db_password" {
   length           = 16
   special          = true
@@ -16,5 +19,21 @@ resource "aws_secretsmanager_secret_version" "shared_db_secret_version" {
     password    = random_password.shared_db_password.result
     db_name     = var.db_name
 
+  })
+}
+
+##################################################################
+# secret for valkey
+###################################################################
+
+resource "aws_secretsmanager_secret" "valkey_secret" {
+  name        = "${var.RESOURCES_PREFIX}-valkey-secret"
+  description = "Valkey Redis credentials"
+}
+
+resource "aws_secretsmanager_secret_version" "valkey_secret_version" {
+  secret_id = aws_secretsmanager_secret.valkey_secret.id
+  secret_string = jsonencode({
+    password = "your_valkey_password"
   })
 }

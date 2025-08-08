@@ -8,8 +8,7 @@ sudo yum install -y aws-cli jq
 mkdir -p /home/ec2-user/colanode
 
 # Set values (Replace these via Terraform interpolation)
-# SECRET_NAME="colanode-shared-db-secret-d"
-SECRET_NAME="${SECRET_NAME}"  # Passed from Terraform
+SECRET_NAME="${SECRET_NAME}"  # Passed from Terraform for rds
 REGION="us-east-1"
 ENV_PATH="/home/ec2-user/colanode/.env"
 
@@ -29,6 +28,18 @@ DB_PASS=$(echo "$SECRET_JSON" | jq -r .password)
 DB_HOST="${DB_HOST}"
 DB_PORT="${DB_PORT}"
 
+# === Fetch Valkey secret ===
+VALKEY_SECRET_NAME= "${VALKEY_SECRET_NAME}"  # Valkey secret
+
+VALKEY_SECRET=$(aws secretsmanager get-secret-value \
+  --secret-id "$VALKEY_SECRET_NAME" \
+  --region "$REGION" \
+  --query 'SecretString' \
+  --output text)
+
+REDIS_PASSWORD=$(echo $VALKEY_SECRET | jq -r .password)
+
+
 # Write to .env file
 cat <<EOF > "$ENV_PATH"
 DB_NAME=$DB_NAME
@@ -36,6 +47,9 @@ DB_USER=$DB_USER
 DB_PASS=$DB_PASS
 DB_HOST=$DB_HOST
 DB_PORT=$DB_PORT
+
+REDIS_PASSWORD=$REDIS_PASSWORD
+
 EOF
 
 # Set permissions

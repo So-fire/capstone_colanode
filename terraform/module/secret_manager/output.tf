@@ -17,3 +17,7 @@ output "db_username" {
 output "shared_db_secret_name" {
   value = aws_secretsmanager_secret.shared_db_secret.name
 }
+
+output "valkey_secret_name" {
+  value = aws_secretsmanager_secret.valkey_secret.name
+}
