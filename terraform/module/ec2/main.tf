@@ -57,6 +57,8 @@ resource "aws_instance" "private_instance" {
   user_data = templatefile("${path.module}/script/secret_script.sh", {
     DB_HOST = var.rds_endpoint
     DB_PORT = var.rds_port
+    SECRET_NAME = var.shared_db_secret_name
+
   })
 
 

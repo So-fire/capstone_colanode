@@ -14,3 +14,6 @@ output "db_name" {
 output "db_username" {
   value = var.db_username
 }
+output "shared_db_secret_name" {
+  value = aws_secretsmanager_secret.shared_db_secret.name
+}

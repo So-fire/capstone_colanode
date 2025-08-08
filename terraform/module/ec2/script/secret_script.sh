@@ -8,7 +8,8 @@ sudo yum install -y aws-cli jq
 mkdir -p /home/ec2-user/colanode
 
 # Set values (Replace these via Terraform interpolation)
-SECRET_NAME="colanode-shared-db-secret-d"
+# SECRET_NAME="colanode-shared-db-secret-d"
+SECRET_NAME="${SECRET_NAME}"  # Passed from Terraform
 REGION="us-east-1"
 ENV_PATH="/home/ec2-user/colanode/.env"
 
