@@ -87,7 +87,7 @@ module "rds_postgresql" {
 
   db_name     = module.secret_manager.db_name
   db_username = module.secret_manager.db_username
-  db_password = module.secret_manager.secret_password
+  # db_password = module.secret_manager.secret_password
 
 
   instance_class        = var.db_instance_class
