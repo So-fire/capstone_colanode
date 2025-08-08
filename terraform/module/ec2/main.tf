@@ -55,8 +55,8 @@ resource "aws_instance" "private_instance" {
   iam_instance_profile = var.PRIVATE_EC2_INSTANCE_PROFILE_NAME
   #tis will run te script on te private instance to fetc db credentials from secret manager also it will Pass DB_HOST and DB_PORT from Terraform
   user_data = templatefile("${path.module}/script/secret_script.sh", {
-    DB_HOST = module.rds_postgresql.rds_endpoint
-    DB_PORT = module.rds_postgresql.rds_port
+    DB_HOST = var.rds_endpoint
+    DB_PORT = var.rds_port
   })
 
 

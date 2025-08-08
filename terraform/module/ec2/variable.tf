@@ -16,3 +16,6 @@ variable "public_subnet_ids" {
 }
 # # variable "db_name" {}
 variable "private_subnet_ids" {}
+
+variable "rds_endpoint" {}
+variable "rds_port" {}
