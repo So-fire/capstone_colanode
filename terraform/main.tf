@@ -69,8 +69,10 @@ module "ec2" {
   public_subnet_ids                 = module.vpc.public_subnet_ids
   private_subnet_ids                = module.vpc.private_subnet_ids
   depends_on                        = [module.secret_manager, module.rds_postgresql]
-
+  rds_endpoint                      = module.rds_postgresql.rds_endpoint
+  rds_port                          = module.rds_postgresql.rds_port
 }
+
 
 module "security_group" {
   source = "./module/security_group"
