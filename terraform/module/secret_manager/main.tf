@@ -8,7 +8,7 @@ resource "random_password" "shared_db_password" {
 }
 
 resource "aws_secretsmanager_secret" "shared_db_secret" {
-  name        = "${var.RESOURCES_PREFIX}-shared-db-secret-redo"
+  name        = "${var.RESOURCES_PREFIX}-shared-db-secret-1"
   description = "Database credentials for postgresql"
 }
 
