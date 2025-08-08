@@ -1,31 +1,34 @@
 #!/bin/bash
 
-# Install tools
-sudo apt update -y
-sudo apt install -y awscli jq
+# Update and install required tools (Amazon Linux uses yum)
+sudo yum update -y
+sudo yum install -y aws-cli jq
 
-# Define values
-SECRET_NAME="colanode-shared-db-secret"  # Match your Terraform secret name
-REGION="us-east-1"                       # Your AWS region
-ENV_PATH="/home/ubuntu/colanode/.env"    # Path to save env file for your app
+# Create app directory
+mkdir -p /home/ec2-user/colanode
 
-# Fetch the secret
+# Set values (Replace these via Terraform interpolation)
+SECRET_NAME="colanode-shared-db-secret"
+REGION="us-east-1"
+ENV_PATH="/home/ec2-user/colanode/.env"
+
+# Fetch secret from Secrets Manager
 SECRET_JSON=$(aws secretsmanager get-secret-value \
   --region "$REGION" \
   --secret-id "$SECRET_NAME" \
   --query SecretString \
   --output text)
 
-# Parse and write to .env
+# Parse secret using jq
 DB_NAME=$(echo "$SECRET_JSON" | jq -r .db_name)
 DB_USER=$(echo "$SECRET_JSON" | jq -r .db_username)
 DB_PASS=$(echo "$SECRET_JSON" | jq -r .password)
 
-# These values must be passed in via Terraform user_data substitution
+# These should be passed in by Terraform using template interpolation
 DB_HOST="${DB_HOST}"
 DB_PORT="${DB_PORT}"
 
-# Create .env file
+# Write to .env file
 cat <<EOF > "$ENV_PATH"
 DB_NAME=$DB_NAME
 DB_USER=$DB_USER
@@ -34,5 +37,6 @@ DB_HOST=$DB_HOST
 DB_PORT=$DB_PORT
 EOF
 
-chown ubuntu:ubuntu "$ENV_PATH"
+# Set permissions
+chown ec2-user:ec2-user "$ENV_PATH"
 chmod 600 "$ENV_PATH"
