@@ -29,7 +29,7 @@ DB_HOST="${DB_HOST}"
 DB_PORT="${DB_PORT}"
 
 # === Fetch Valkey secret ===
-VALKEY_SECRET_NAME= "${VALKEY_SECRET_NAME}"  # Valkey secret
+VALKEY_SECRET_NAME="${VALKEY_SECRET_NAME}"  # Valkey secret
 
 VALKEY_SECRET=$(aws secretsmanager get-secret-value \
   --secret-id "$VALKEY_SECRET_NAME" \

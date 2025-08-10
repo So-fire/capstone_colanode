@@ -16,17 +16,17 @@ services:
   #   networks:
   #     - colanode_network
 
-  valkey:
-    image: valkey/valkey:8.1
-    container_name: colanode_valkey
-    restart: always
-    command: ['valkey-server', '--requirepass', 'your_valkey_password']
-    volumes:
-      - valkey_data:/data
-    ports:
-      - '6379:6379'
-    networks:
-      - colanode_network
+  # valkey:
+  #   image: valkey/valkey:8.1                               #make sure you uncomment tis block wenu want to use docker image
+  #   container_name: colanode_valkey                         #and make sure to comment it wen u ave and want to use rds instead of docker container     
+  #   restart: always
+  #   command: ['valkey-server', '--requirepass', 'your_valkey_password']
+  #   volumes:
+  #     - valkey_data:/data
+  #   ports:
+  #     - '6379:6379'
+  #   networks:
+  #     - colanode_network
 
   minio:
     image: minio/minio:RELEASE.2025-04-08T15-41-24Z
@@ -62,7 +62,7 @@ services:
       SERVER_NAME: 'Colanode Prod'
       SERVER_MODE: 'standalone'
       SERVER_PATH_PREFIX: api
-      SERVER_CORS_ORIGIN: 'http://44.202.223.215,http://localhost:3000'  #put your  public ip for your public facing ec2
+      SERVER_CORS_ORIGIN: 'http://44.203.221.139,http://localhost:3000'  #put your  public ip for your public facing ec2
       SERVER_HOST: '0.0.0.0'  # 👈 Add this line wenever u are deploying to ec2
       ACCOUNT_VERIFICATION_TYPE: 'automatic'
       ACCOUNT_OTP_TIMEOUT: '600'
@@ -70,7 +70,8 @@ services:
       USER_MAX_FILE_SIZE: '104857600'
       # POSTGRES_URL: 'postgres://colanode_user:postgrespass123@postgres:5432/colanode_db' #use tis wen using docker container
       POSTGRES_URL: 'postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}' #use tis wen using rds
-      REDIS_URL: 'redis://:your_valkey_password@valkey:6379/0'
+      #REDIS_URL: 'redis://:your_valkey_password@valkey:6379/0'         #use tis wen using docker container
+      REDIS_URL: ${REDIS_URL}                                      #use tis wen using aws valkey redis cache
       STORAGE_S3_ENDPOINT: 'http://minio:9000'
       STORAGE_S3_ACCESS_KEY: 'minioadmin'
       STORAGE_S3_SECRET_KEY: 'your_minio_password'
