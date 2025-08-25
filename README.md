@@ -120,3 +120,112 @@ To run Colanode locally in development mode:
 ## License
 
 Colanode is released under the [Apache 2.0 License](LICENSE).
+
+
+
+#########################################################################################3
+##code to copy ss key for private ec2 into public ec2
+##step 1
+
+scp -i "/c/Users/DELL/capstone_project/colanode/colanode/terraform/module/ec2/keys/colanode-key" \
+"/c/Users/DELL/capstone_project/colanode/colanode/terraform/module/ec2/keys/colanode-key" \
+ec2-user@44.203.221.139:~
+
+##step 2
+
+ssh -i "/c/Users/DELL/capstone_project/colanode/colanode/terraform/module/ec2/keys/colanode-key" ec2-user@44.203.221.139
+
+##step 3
+
+chmod 400 colanode-key
+
+##step 4
+
+ ssh -i colanode-key ec2-user@10.0.2.181
+
+
+##########################################################################
+##########################################################################################
+updated scriptfor just ip address
+############################################################################################
+server {
+    listen 443 ssl;
+    server_name 44.198.171.48;  # Your public IP
+
+    ssl_certificate     /etc/ssl/certs/colanode.crt;
+    ssl_certificate_key /etc/ssl/private/colanode.key;
+
+    # CORS headers for all responses (even errors)
+    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+    add_header 'Access-Control-Allow-Headers' '*' always;
+
+    location ~ ^/api(/|$) {
+        proxy_pass http://10.0.2.6:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' '*';
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+    }
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+##########################################################################################
+updated script to add domain name
+#############################################################################################
+
+# HTTPS server
+server {
+    listen 443 ssl;
+    server_name colanode.devopsthepracticalway.club; #insert public ip or domain name
+
+    ssl_certificate     /etc/ssl/certs/colanode.crt;
+    ssl_certificate_key /etc/ssl/private/colanode.key;
+
+    # CORS headers for all responses (even errors)
+    add_header 'Access-Control-Allow-Origin' '*' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+    add_header 'Access-Control-Allow-Headers' '*' always;
+
+    # Route for API
+    location ~ ^/api(/|$) {
+        proxy_pass http://10.0.2.47:3000;  # Replace with actual backend private IP
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        if ($request_method = OPTIONS) {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' '*';
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+    }
+
+    # Route for frontend or other content
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+# HTTP server that redirects to HTTPS
+server {
+    listen 80;
+    server_name colanode.devopsthepracticalway.club;
+    return 301 https://$host$request_uri;
+}
